@@ -1,0 +1,25 @@
+pipeline {
+    agent {label 'cicd'
+    }
+        stages {
+            stage ( 'check out scm' ) {
+                steps{
+                    git url: 'https://github.com/wakaleo/game-of-life.git',
+                    branch: 'master'
+                }
+            }
+            stage ( 'build' ) {
+                steps {
+                   sh 'mvn clean package'
+                }
+            }
+            stage ( 'deploy' ) {
+                steps {
+                 // sh 'cd /home/ubuntu/jenkins/workspace/game-of-life-pipeline/gameoflife-web/target/'
+                    sh 'sudo cp /home/ubuntu/jenkins/workspace/game-of-life-pipeline/gameoflife-web/target/gameoflife.war /var/lib/tomcat9/webapps/'
+                    sh 'sudo systemctl restart tomcat9.service'
+
+                }
+            }
+    }
+}
