@@ -1,0 +1,22 @@
+pipeline {
+    agent {label 'jenkinsnode'
+    }
+        stages {
+            stage ( 'check out scm' ) {
+                steps{
+                    git url: 'https://github.com/spring-projects/spring-petclinic.git',
+                    branch: 'main'
+                }
+            }
+            stage ( 'build' ) {
+                steps{
+                sh './mvnw package'
+                }
+            }
+            stage ( 'deploy' ) {
+                steps {
+                   sh 'sudo java -jar /home/ubuntu/jenkins/workspace/spring-pet-clinic-pipeline/target/*.jar'
+                }
+            }
+        }
+}
