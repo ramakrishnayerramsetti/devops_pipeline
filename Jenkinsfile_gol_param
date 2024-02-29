@@ -1,0 +1,28 @@
+pipeline {
+    agent {label 'cicd'
+    }
+parameters { choice(name: 'project_url', choices: ['https://github.com/wakaleo/game-of-life.git', 'https://github.com/spring-projects/spring-petclinic.git'], description: 'url') 
+             choice(name: 'goal', choices: ['mvn clean package', 'mvn install'], description: 'mvn goal')
+             choice(name: 'branch', choices: ['master', 'main'], description: 'branch')
+}
+        stages {
+            stage ( 'check out scm' ) {
+                steps{
+                    git url: "${params.project_url}",
+                    branch: "${params.branch}"
+                }
+            }
+            stage ( 'build' ) {
+                steps {
+                   sh "${params.goal}"
+                }
+            }
+            stage ( 'deploy' ) {
+                steps {
+                    sh 'sudo cp /home/ubuntu/jenkins/workspace/gameoflifepipeline/gameoflife-web/target/gameoflife.war /var/lib/tomcat9/webapps/'
+                    sh 'sudo systemctl restart tomcat9.service'
+
+                }
+            }
+    }
+}
