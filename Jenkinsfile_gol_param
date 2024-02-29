@@ -19,7 +19,7 @@ parameters { choice(name: 'project_url', choices: ['https://github.com/wakaleo/g
             }
             stage ( 'deploy' ) {
                 steps {
-                    sh 'sudo cp /home/ubuntu/jenkins/workspace/gameoflifepipeline/gameoflife-web/target/gameoflife.war /var/lib/tomcat9/webapps/'
+                    sh 'sudo cp /home/ubuntu/jenkins/workspace/game-of-life-pipeline/gameoflife-web/target/gameoflife.war /var/lib/tomcat9/webapps/'
                     sh 'sudo systemctl restart tomcat9.service'
 
                 }
