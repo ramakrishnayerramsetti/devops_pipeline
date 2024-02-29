@@ -1,0 +1,25 @@
+pipeline {
+    agent {label 'cicd'
+    }
+    parameters { choice(name: 'project_url', choices: ['https://github.com/Nageshcloud/spring-petclinic.git', 'https://github.com/wakaleo/game-of-life.git'], description: 'url') 
+                 choice(name: 'goal', choices: ['./mvnw package', 'mvn install'], description: 'maven goal')
+                 choice(name: 'branch', choices: ['master', 'main'], description: 'branch')}
+        stages {
+            stage ( 'check out scm' ) {
+                steps{
+                    git url:"${params.project_url}",
+                    branch:"${params.branch}"
+                }
+            }
+            stage ( 'build' ) {
+                steps{
+                sh "${params.goal}"
+                }
+            }
+            stage ( 'deploy' ) {
+                steps {
+                   sh 'sudo java -jar /home/ubuntu/jenkins/workspace/spring-pet-clinic-pipeline/target/*.jar'
+                }
+            }
+        }
+}
